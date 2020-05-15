@@ -115,6 +115,8 @@ Ytest = Ytest - 1;                      % class labels are defined from 0, but m
 Accuracy = numel(find(Ytest==label_test))/length(Ytest)
 ```
 
+#### The above steps have also been compiled in a single matlab script ```RCDT_NS.m``` which runs the RCDT-NS classifier on MNIST dataset.
+
 # Publication for Citation
 Please cite the following publication when publishing findings that benefit from the codes provided here.
 
