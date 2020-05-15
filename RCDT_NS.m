@@ -64,8 +64,9 @@ end
 %% FIT: Calculate the basis vectors for each class
 len_subspace = 0;
 for cls=0:numClass-1
-    ind = find(label_train==cls);
-    ind_sub = randsample(ind,trainSamples);
+    ind = find(label_train==cls);           % find train samples corresponding to class 'cls'
+    ind_sub = randsample(ind,trainSamples); % control the number of train samples to fit the model using 
+                                            % 'trainSamples' variable; all the samples can also used
     classSamples = Xtrain(:,ind_sub);
     
     % calculate basis vectors using SVD
@@ -83,20 +84,19 @@ for cls=0:numClass-1
     basis_ind = find(S>=0.99);
     if len_subspace < basis_ind(1)
         len_subspace = basis_ind(1);
-    end
-    
+    end 
 end
 
 %% PREDICT: classify the test samples
 for cls=0:numClass-1
     B = basis(cls+1).V;
     B = B(:,1:len_subspace);
-    Xproj = (B*B')*Xtest;
+    Xproj = (B*B')*Xtest;               % projection of the test sample on the subspace
     Dproj = Xtest - Xproj;
     D(cls+1,:) = sqrt(sum(Dproj.^2,1));
 end
-[~,Ytest] = min(D);
-Ytest = Ytest - 1;
+[~,Ytest] = min(D);                     % predict the class label of the test sample
+Ytest = Ytest - 1;                      % class labels are defined from 0, but matlab index starts from 1
 
 Accuracy = numel(find(Ytest==label_test))/length(Ytest)
 
