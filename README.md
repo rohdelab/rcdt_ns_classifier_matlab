@@ -37,6 +37,84 @@ for cls=0:numClass-1
 end
 ```
 
+### Calculate RCDT
+
+1. Define some basic parameters of RCDT:
+
+```matlab
+I_domain = [0, 1];
+Ihat_domain = [0, 1];
+theta_seq = 0:4:179;
+rm_edge = 1;
+```
+2. Calculate RCDT for the train images:
+
+```matlab
+Xtrain = [];
+for i = 1:size(im_train,3)
+    I = squeeze(im_train(:,:,i));
+    Ihat = RCDT(I_domain, I, Ihat_domain, theta_seq, rm_edge);
+    Xtrain = cat(2, Xtrain, Ihat(:));
+end
+```
+
+3. Calculate RCDT for the test images:
+
+```matlab
+Xtest = [];
+for i = 1:size(im_test,3)
+    I = squeeze(im_test(:,:,i));
+    Ihat = RCDT(I_domain, I, Ihat_domain, theta_seq, rm_edge);
+    Xtest = cat(2, Xtest, Ihat(:));
+end
+```
+
+### Calculate the basis vectors for each class
+
+```matlab
+len_subspace = 0;
+for cls=0:numClass-1
+    ind = find(label_train==cls);           % find train samples corresponding to class 'cls'
+    ind_sub = randsample(ind,trainSamples); % control the number of train samples to fit the model using 
+                                            % 'trainSamples' variable; all the samples can also used
+    classSamples = Xtrain(:,ind_sub);
+    
+    % calculate basis vectors using SVD
+    [uu,su,vu]=svd(classSamples);
+    s=diag(su);
+    eps= 1e-4;
+    indx=find(s>eps);
+    V=uu(:,indx);
+    
+    basis(cls+1).V = V;
+    
+    % take basis components with atleast 99% variance
+    S = cumsum(s);
+    S = S/max(S);
+    basis_ind = find(S>=0.99);
+    if len_subspace < basis_ind(1)
+        len_subspace = basis_ind(1);
+    end 
+end
+```
+
+### Test the model
+
+```matlab
+%% PREDICT: classify the test samples
+for cls=0:numClass-1
+    B = basis(cls+1).V;
+    B = B(:,1:len_subspace);
+    Xproj = (B*B')*Xtest;               % projection of the test sample on the subspace
+    Dproj = Xtest - Xproj;
+    D(cls+1,:) = sqrt(sum(Dproj.^2,1)); % distance between test sample and its projection
+end
+[~,Ytest] = min(D);                     % predict the class label of the test sample
+Ytest = Ytest - 1;                      % class labels are defined from 0, but matlab index starts from 1
+
+Accuracy = numel(find(Ytest==label_test))/length(Ytest)
+```
+
 # Publication for Citation
 Please cite the following publication when publishing findings that benefit from the codes provided here.
 
