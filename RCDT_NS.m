@@ -67,6 +67,7 @@ for cls=0:numClass-1
     ind = find(label_train==cls);           % find train samples corresponding to class 'cls'
     ind_sub = randsample(ind,trainSamples); % control the number of train samples to fit the model using 
                                             % 'trainSamples' variable; all the samples can also be used
+                                            % by setting 'ind_sub = ind'
     classSamples = Xtrain(:,ind_sub);
     
     % calculate basis vectors using SVD
