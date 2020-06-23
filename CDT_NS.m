@@ -36,6 +36,7 @@ I_domain = linspace(0,1,lenVec);    % domain of 1D signal
 Ihat_domain = linspace(0,1,lenVec); % domain of CDT
 
 rm_edge = 1;
+eps=1e-8;
 
 % train set
 disp('Calculate CDT of train signals')
@@ -45,7 +46,7 @@ else
     Xtrain = [];
     for i = 1:size(im_train,2)
         I = im_train(:,i);
-        Ihat = CDT(I_domain, I, Ihat_domain, rm_edge); % CDT of each sample
+        Ihat = CDT(I_domain, I+eps, Ihat_domain, rm_edge); % CDT of each sample
         Xtrain = cat(2, Xtrain, Ihat(:));
     end
     save([datadir 'Xtrain.mat'],'Xtrain','label_train')
@@ -59,7 +60,7 @@ else
     Xtest = [];
     for i = 1:size(im_test,2)
         I = im_test(:,i);
-        Ihat = CDT(I_domain, I, Ihat_domain, rm_edge); % CDT of each sample
+        Ihat = CDT(I_domain, I+eps, Ihat_domain, rm_edge); % CDT of each sample
         Xtest = cat(2, Xtest, Ihat(:));
     end
     save([datadir 'Xtest.mat'],'Xtest','label_test')
