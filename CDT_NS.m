@@ -80,7 +80,7 @@ for j=1:length(trainSamples)
         classSamples = Xtrain(:,ind_sub);
 
         % calculate basis vectors using SVD
-        [uu,su,vu]=svd(classSamples);
+        [uu,su,vu]=svds(classSamples,size(classSamples,2));
         s=diag(su);
         eps= 1e-4;
         indx=find(s>eps);
@@ -101,19 +101,19 @@ for j=1:length(trainSamples)
     for cls=0:numClass-1
         B = basis(cls+1).V;
         B = B(:,1:len_subspace);
-        Xproj = (B*B')*Xtest;               % projection of the test sample on the subspace
+        Xproj = B*(B'*Xtest);               % projection of the test sample on the subspace
         Dproj = Xtest - Xproj;
         D(cls+1,:) = sqrt(sum(Dproj.^2,1));
     end
     [~,Ytest] = min(D);                     % predict the class label of the test sample
     Ytest = Ytest - 1;                      % class labels are defined from 0, but matlab index starts from 1
 
-    Accuracy(j) = numel(find(Ytest==label_test))/length(Ytest)
+    Accuracy(j) = numel(find(Ytest==label_test))/length(Ytest);
 end
-
+Accuracy
 %% PLOT the accuracy values
 figure(1)
-ph=semilogx(trainSamples,Accuracy,'r-o')
+ph=semilogx(trainSamples,Accuracy,'r-o');
 set(gca,'XTick',trainSamples,'XTickLabels',trainSamples,'FontSize',20,'LineWidth',2.0)
 xlabel('Training Samples','FontSize',20)
 ylabel('Classification Accuracy','FontSize',20)
