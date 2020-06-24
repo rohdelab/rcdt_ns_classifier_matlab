@@ -31,10 +31,6 @@ disp('Loaded data')
 
 %% calculate CDT for both train and test sets
 
-lenVec=size(im_train,1);            % Length of each 1D vector
-I_domain = linspace(0,1,lenVec);    % domain of 1D signal
-Ihat_domain = linspace(0,1,lenVec); % domain of CDT
-
 rm_edge = 1;
 eps=1e-8;
 
@@ -45,8 +41,11 @@ if exist([datadir 'Xtrain.mat'])
 else
     Xtrain = [];
     for i = 1:size(im_train,2)
-        I = im_train(:,i);
-        Ihat = CDT(I_domain, I+eps, Ihat_domain, rm_edge); % CDT of each sample
+        I = im_train(:,i); % zero padding to both ends
+        I = abs(I)+eps;
+        I_domain = linspace(0,1,length(I));    % domain of 1D signal
+        Ihat_domain = linspace(0,1,length(I)); % domain of CDT
+        Ihat = CDT(I_domain, I/sum(I), Ihat_domain, rm_edge); % CDT of each sample
         Xtrain = cat(2, Xtrain, Ihat(:));
     end
     save([datadir 'Xtrain.mat'],'Xtrain','label_train')
@@ -59,8 +58,11 @@ if exist([datadir 'Xtest.mat'])
 else
     Xtest = [];
     for i = 1:size(im_test,2)
-        I = im_test(:,i);
-        Ihat = CDT(I_domain, I+eps, Ihat_domain, rm_edge); % CDT of each sample
+        I = im_test(:,i); % zero padding to both ends
+        I = abs(I)+eps;
+        I_domain = linspace(0,1,length(I));    % domain of 1D signal
+        Ihat_domain = linspace(0,1,length(I)); % domain of CDT
+        Ihat = CDT(I_domain, I/sum(I), Ihat_domain, rm_edge); % CDT of each sample
         Xtest = cat(2, Xtest, Ihat(:));
     end
     save([datadir 'Xtest.mat'],'Xtest','label_test')
