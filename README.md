@@ -121,4 +121,4 @@ Accuracy = numel(find(Ytest==label_test))/length(Ytest)
 # Publication for Citation
 Please cite the following publication when publishing findings that benefit from the codes provided here.
 
-#### Shifat-E-Rabbi M, Yin X, Rubaiyat AH, Li S, Kolouri S, Aldroubi A, Nichols JM, Rohde GK. Radon cumulative distribution transform subspace modeling for image classification. Journal of Mathematical Imaging and Vision. 2021 Aug 5:1-9. [[Paper](https://link.springer.com/article/10.1007/s10851-021-01052-0)]
+#### Shifat-E-Rabbi M, Yin X, Rubaiyat AH, Li S, Kolouri S, Aldroubi A, Nichols JM, Rohde GK. Radon cumulative distribution transform subspace modeling for image classification. _Journal of Mathematical Imaging and Vision_. 2021 Aug 5:1-9. [[Paper](https://link.springer.com/article/10.1007/s10851-021-01052-0)]
